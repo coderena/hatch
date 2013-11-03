@@ -1,0 +1,6 @@
+template: posts.jade
+title:
+date:
+comments: true
+tags: []
+ignored: false

@@ -1,0 +1,65 @@
+extends common/default
+
+block prepend title
+  | #{ getTitle() } -
+
+block css
+  style.
+    @media only screen and (max-width: 768px) {
+      .content {float: none; width: 95%;}
+      .content .span7 {float:none; width:100%;}
+      .aside {float: none; width: 95%;}
+    }
+block content
+  .main
+    .container
+      .row
+        .span12
+          h2
+            span
+              | #{document.title}
+              if document.subtitle
+                span.small  - #{document.subtitle}
+
+      .row
+        .span9.content
+          article.row
+            .span2.toc-container
+              .toc(data-spy="affix", data-offset-top="185", style="width:140px;")
+
+            .span7
+              != document.content[0]
+              if site.baidu_share
+                include common/includes/baidu_share.html
+              hr
+              include common/includes/duoshuo
+        aside.span3.aside
+          .well
+
+
+
+block js
+  script.
+    window.onload = function () {
+      // Looks for an element with the class "toc" and appends an empty list
+      $(".toc").append("<ol id='toc'></ul>");
+      var TOC = $("ol#toc");
+      
+      $.each($('article h2'), function(k, v) {
+        var heading = $(v); // get the heading
+        var headingText = $(v).text(); // get the value of the heading
+        // make a URI-friendly id for the heading
+        var headingID = encodeURIComponent(headingText);
+        $(v).attr("id", headingID); //assign the new id
+        // change the heading text to include a number for prettier headings
+        heading.text((k+1) +". " + headingText);
+        // create a link in the list for the heading
+        TOC.append("<li><a href=\"#" + headingID +"\">" + headingText + "</a></li>" );
+      });
+      // Put a title on the table of contents
+      $(".toc").prepend("<h2>目录</h2>");
+      //$('body').data('spy', 'scroll').data('target', '#toc');
+    }
+
+
+

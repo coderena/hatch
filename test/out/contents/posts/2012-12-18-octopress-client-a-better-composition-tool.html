@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>产品随想：octopress客户端 —— Atanasoff |  -
+    </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!--meta(name="apple-mobile-web-app-capable", content="yes")-->
+    <!--meta(name="apple-mobile-web-app-status-bar-style", content="black-translucent")-->
+    <!--link(rel="stylesheet", href="/assets/css/bootstrap.min.css")-->
+    <!--link(rel="stylesheet", href="/assets/css/font-awesome.css")-->
+    <!--link(rel="stylesheet", href="/assets/css/base.css")-->
+    <!--link(rel="stylesheet", href="/assets/css/red.css")-->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="/assets/css/font-awesome-ie7.css">
+    <script src="/assets/js/html5-3.6-respond-1.1.0.min.js"></script>
+    <![endif]-->
+    <style>
+      @media only screen and (max-width: 768px) {
+        .content {float: none; width: 95%;}
+        .content .span7 {float:none; width:100%;}
+        .aside {float: none; width: 95%;}
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main">
+      <div class="container">
+        <div class="row">
+          <div class="span12">
+            <h2><span>产品随想：octopress客户端 —— Atanasoff<span class="small"> - 解放程序猿的那双懒惰的手</span></span></h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="span9 content">
+            <article class="row">
+              <div class="span2 toc-container">
+                <div data-spy="affix" data-offset-top="185" style="width:140px;" class="toc"></div>
+              </div>
+              <div class="span7">
+                <hr>
+              </div>
+            </article>
+          </div>
+          <aside class="span3 aside">
+            <div class="well"></div>
+          </aside>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="span12">
+            <center>
+              <p>Copyright © 2013 - Tyr Chen - 欢迎转载，转载请携带 <a href="#" title="#">原文网址</a> 及作者新浪微博地址<a href="http://weibo.com/tchen82" target="_blank"> @陈天_Tyr </a><span>
+                  <script>
+                    var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+                    document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F639096b5979f5825515e0f88f871f56c' type='text/javascript'%3E%3C/script%3E"));
+                  </script></span></p>
+            </center>
+          </div>
+        </div>
+      </div>
+      <script src="/assets/js/jquery-1.8.0.min.js"></script>
+      <script src="/assets/js/bootstrap.min.js"></script>
+    </footer>
+    <script>
+      window.onload = function () {
+        // Looks for an element with the class "toc" and appends an empty list
+        $(".toc").append("<ol id='toc'></ul>");
+        var TOC = $("ol#toc");
+        
+        $.each($('article h2'), function(k, v) {
+          var heading = $(v); // get the heading
+          var headingText = $(v).text(); // get the value of the heading
+          // make a URI-friendly id for the heading
+          var headingID = encodeURIComponent(headingText);
+          $(v).attr("id", headingID); //assign the new id
+          // change the heading text to include a number for prettier headings
+          heading.text((k+1) +". " + headingText);
+          // create a link in the list for the heading
+          TOC.append("<li><a href=\"#" + headingID +"\">" + headingText + "</a></li>" );
+        });
+        // Put a title on the table of contents
+        $(".toc").prepend("<h2>目录</h2>");
+        //$('body').data('spy', 'scroll').data('target', '#toc');
+      }
+      
+      
+      
+    </script>
+  </body>
+</html>
