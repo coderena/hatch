@@ -72,7 +72,9 @@ fullclean: clean
 
 # misc
 test:
-	@echo "
+	@echo ""
+	@echo "layout depends:", $?
+
 diff:
 	@echo "Comparing $(CONTENT_PATH) with $(OUT_PATH):"
 	@echo $(shell $(HATCH_DIFF) -e .html $(CONTENT_PATH) $(OUT_PATH))

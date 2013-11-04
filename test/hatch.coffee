@@ -8,7 +8,7 @@ hatchConfig =
     layoutData:
         site:
             # default url of the site
-            url: 'http://hatch-example.com'
+            url: 'http://hatch-jade-example.com'
             # default time of the site
             title: 'Example website build with hatch'
             # The website description (for SEO)

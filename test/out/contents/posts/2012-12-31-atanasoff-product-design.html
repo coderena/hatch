@@ -40,7 +40,214 @@
               <div class="span2 toc-container">
                 <div data-spy="affix" data-offset-top="185" style="width:140px;" class="toc"></div>
               </div>
-              <div class="span7">
+              <div class="span7"><p><a href="http://tchen.me/blog/2012/12/19/atanasoff-product-flow-chart/">之前的文章</a>把atanasoff的主要流程思考了一下，元旦期间考虑下atanasoff的实现。</p>
+<h2 id="-">交互</h2>
+<h3 id="-">整站结构</h3>
+<p><img src="/assets/img/charts/atanasoff-pages.jpg" alt="atanasoff整站结构"></p>
+<p><!--more--></p>
+<h3 id="-">主要页面元素</h3>
+<p><img src="/assets/img/charts/atanasoff-widgets.jpg" alt="atanasoff主要页面元素"></p>
+<h2 id="-">设计</h2>
+<h3 id="-">数据结构</h3>
+<h4 id="user">User</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Field</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">username</td>
+<td style="text-align:left">从github继承过来的username，不能修改</td>
+</tr>
+<tr>
+<td style="text-align:left">screen_name</td>
+<td style="text-align:left">从github继承过来，暂时不能修改</td>
+</tr>
+<tr>
+<td style="text-align:left">avatar</td>
+<td style="text-align:left">从github继承过来，暂时不能修改</td>
+</tr>
+<tr>
+<td style="text-align:left">total_blogs</td>
+<td style="text-align:left">博客总数</td>
+</tr>
+</tbody>
+</table>
+<h4 id="blog">Blog</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Field</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">title</td>
+<td style="text-align:left">blog的title，与config中的title冗余</td>
+</tr>
+<tr>
+<td style="text-align:left">repo_name</td>
+<td style="text-align:left">github repo的名字</td>
+</tr>
+<tr>
+<td style="text-align:left">author</td>
+<td style="text-align:left">blog的作者</td>
+</tr>
+<tr>
+<td style="text-align:left">location</td>
+<td style="text-align:left">property. 该blog在磁盘中的路径</td>
+</tr>
+<tr>
+<td style="text-align:left">config</td>
+<td style="text-align:left">json-style配置文件，_config.yml的内部表现形式</td>
+</tr>
+<tr>
+<td style="text-align:left">locked</td>
+<td style="text-align:left">是否处于编辑状态</td>
+</tr>
+<tr>
+<td style="text-align:left">total_posts</td>
+<td style="text-align:left">文章总数</td>
+</tr>
+<tr>
+<td style="text-align:left">total_pages</td>
+<td style="text-align:left">页面总数</td>
+</tr>
+<tr>
+<td style="text-align:left">total_slides</td>
+<td style="text-align:left">演示文档总数</td>
+</tr>
+</tbody>
+</table>
+<h4 id="post">Post</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Field</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">title</td>
+<td style="text-align:left">post的title</td>
+</tr>
+<tr>
+<td style="text-align:left">location</td>
+<td style="text-align:left">property. 该post在磁盘中的路径</td>
+</tr>
+</tbody>
+</table>
+<h3 id="api-api-v1-">API (以 <code>/api/v1/</code> 开始)</h3>
+<h4 id="blog">Blog</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Url</th>
+<th style="text-align:left">parameters</th>
+<th style="text-align:left">Functionality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">/blogs/new/</td>
+<td style="text-align:left">P: repo_path, title</td>
+<td style="text-align:left">创建新的blog</td>
+</tr>
+<tr>
+<td style="text-align:left">/uname/blogs/</td>
+<td style="text-align:left">G: page</td>
+<td style="text-align:left">列出uname下的博客</td>
+</tr>
+<tr>
+<td style="text-align:left">/uname/bname/</td>
+<td style="text-align:left">G: type[post,page,slide]</td>
+<td style="text-align:left">列出bname下的文章</td>
+</tr>
+<tr>
+<td style="text-align:left">/uname/bname/config</td>
+<td style="text-align:left">G <br> PUT: config</td>
+<td style="text-align:left">获取或设置bname配置</td>
+</tr>
+</tbody>
+</table>
+<h4 id="post">Post</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Url</th>
+<th style="text-align:left">parameters</th>
+<th style="text-align:left">Functionality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">/uname/bname/pname/</td>
+<td style="text-align:left">G <br> PUT: content</td>
+<td style="text-align:left">获取或设置文章正文</td>
+</tr>
+</tbody>
+</table>
+<h4 id="activity">Activity</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Url</th>
+<th style="text-align:left">parameters</th>
+<th style="text-align:left">Functionality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">/uname/activities/</td>
+<td style="text-align:left">G: page</td>
+<td style="text-align:left">列出uname下的活动</td>
+</tr>
+</tbody>
+</table>
+<h4 id="web-hooks">Web hooks</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Url</th>
+<th style="text-align:left">parameters</th>
+<th style="text-align:left">Functionality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">/uname/bname/hook</td>
+<td style="text-align:left">: payload</td>
+<td style="text-align:left">generate博客</td>
+</tr>
+</tbody>
+</table>
+<p>需要学习下 <a href="https://help.github.com/articles/post-receive-hooks">Post-Receive Hooks</a>。</p>
+<h2 id="-nodejs-">技术方案 (nodejs)</h2>
+<h3 id="technical-stack">Technical Stack</h3>
+<ul>
+<li>nginx做为web server</li>
+<li>express做为application server</li>
+<li>mongodb做为database server</li>
+<li>使用 <a href="https://github.com/visionmedia/mocha">mocha</a> 做BDD</li>
+<li>使用 <a href="http://jasny.github.com/bootstrap/index.html">jasny</a> 来bootstrap项目</li>
+<li>使用 <a href="http://jade-lang.com/">jade</a> 撰写模版</li>
+<li>使用 <a href="http://coffeescript.org">coffeescript</a> 写代码，<a href="http://lesscss.org">less</a> 写样式</li>
+</ul>
+<h3 id="-">依赖的库</h3>
+<ul>
+<li>github API和第三方登录：<a href="https://github.com/ajaxorg/node-github">node-github</a></li>
+<li>git lib用户提交代码和读取commit log：<a href="https://github.com/libgit2/node-gitteh">node-gitteh</a>。libgit2的nodejs binding。貌似现在不支持写入。</li>
+</ul>
+<h2 id="-">后记</h2>
+<p>元旦开工，但基本只有清晨和晚上有时间。争取3天下来做个能用的雏形。</p>
+<p>依旧例，上小宝照片一张。
+<img src="/assets/img/photos/baby20121231.jpg" alt="小宝"></p>
+
                 <hr>
               </div>
             </article>

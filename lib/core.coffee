@@ -4,6 +4,7 @@ fs = require 'fs'
 path = require 'path'
 marked = require 'marked'
 shell = require 'shelljs'
+async = require 'async'
 Adapter = require('./db/index').MongoAdapter
 
 compilers = []
@@ -117,11 +118,6 @@ defaultConfig =
         getKeywords: ->
             @site.keywords.concat(@document.keywords or []).join(', ')
 
-        getRelated: (tags)->
-            @adapter.findTag tags: $in: tags, 0, (err, docs) ->
-                
-
-
 
 # helpers
 getTarget: (filename, src, dst, ext='.html') ->
@@ -140,7 +136,7 @@ class Hatch
             config = {}
         _.extend @config, config
         _.extend @config, conventions
-        @config.adapter = @config.layoutData.adapter = @adapter = new Adapter(@config.database)
+        @config.adapter = @adapter = new Adapter(@config.database)
 
     # parse the file and update/insert it into database
     # the filename should be unique.
@@ -220,20 +216,34 @@ class Hatch
     # generate the output based on the src file (we will leverage the parsed result in database).
     generate: (src, cb) ->
         self = @
-        dst = src.replace(@config.src, @config.out).replace(path.extname(src), '.html')
+        dst = src.replace(@config.src, @config.out).replace(path.extname(src), '')
 
         @adapter.findOne src: src, (err, doc) ->
             return cb(err) if err
 
             if doc
-                locals = {document: doc}
-                _.extend locals, self.config.layoutData
-                for own key, value of locals
-                    if _.isFunction value
-                        locals[key] = value.bind(locals)
-                html = self.layouts[doc.layout] locals
-                fs.writeFile dst, html, (err) ->
-                    cb err, dst
+                generate_doc = (i, callback) ->
+                    data = {}
+                    _.extend data, doc
+                    data.content = doc.contents[i]
+                    delete data.contents
+
+                    locals = {document: data}
+                    _.extend locals, self.config.layoutData
+                    for own key, value of locals
+                        if _.isFunction value
+                            locals[key] = value.bind(locals)
+                    html = self.layouts[doc.layout] locals
+                    if i is 0
+                        filename = "#{dst}.html"
+                    else
+                        filename = "#{dst}.#{i}.html"
+                    fs.writeFile filename, html, (err) ->
+                        callback err, filename
+
+                async.map _.range(doc.contents.length), generate_doc, (err, data) ->
+                    cb err, data
+
             else
                 cb null, null
 
